@@ -5,20 +5,27 @@ import { FcGoogle } from "react-icons/fc";
 import shareVideo from "../assets/share.mp4";
 import logo from "../assets/logowhite.png";
 
+import { client } from "../client";
+
 const Login = () => {
+    const navigate = useNavigate();
 
     const responseGoogle = (response) => {
-        localStorage.setItem("user", JSON.stringify(response.profileObj))
+        localStorage.setItem("user", JSON.stringify(response.profileObj));
 
-        const { name, googleId, imageUrl } = response.profileObj
-        
+        const { name, googleId, imageUrl } = response.profileObj;
+
         const doc = {
             _id: googleId,
             _type: "user",
             userName: name,
-            image: imageUrl
-        }
-    }
+            image: imageUrl,
+        };
+
+        client.createIfNotExists(doc).then(() => {
+            navigate("/", { replace: true });
+        });
+    };
 
     return (
         <div className="flex justify-start item-center flex-col h-screen">
