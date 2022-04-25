@@ -1,8 +1,8 @@
 export const userQuery = (userId) => {
     // Sanity Query to get user data
     const query = `*[_type == "user" && _id == '${userId}']`;
-    return query
-}
+    return query;
+};
 
 export const searchQuery = (searchTerm) => {
     const query = `*[_type == "pin" && title match "${searchTerm}*" || category match "${searchTerm}*" || about match "${searchTerm}*"]{
@@ -26,7 +26,30 @@ export const searchQuery = (searchTerm) => {
                 image
             },
         },
-    }`
+    }`;
 
-    return query
-}
+    return query;
+};
+
+export const feedQuery = `*[_type == "pin"] | order(_createAt desc) {
+    image {
+        asset -> {
+                url
+        }
+    },
+    _id,
+    destination,
+    postedBy -> {
+        _id, 
+        userName,
+        image
+    },
+    save[] {
+        _key,
+        postedBy -> {
+            _id,
+            userName,
+            image
+        },
+    },
+}`;
