@@ -5,9 +5,10 @@ import Home from "./container/Home"
 
 function App() {
     return (
+        /* fixed Route path="/" to path="/*" */
         <Routes>
             <Route path="login" element={<Login />} />
-            <Route path="/" element={<Home />} />
+            <Route path="/*" element={<Home />} /> 
         </Routes>
     )
 }

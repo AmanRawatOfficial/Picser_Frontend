@@ -71,7 +71,7 @@ const Home = () => {
                 ref={scrollRef}
             >
                 <Routes>
-                    <Route path="/profile/:userId" element={<UserProfile />} />
+                    <Route path="/user-profile/:userId" element={<UserProfile />} />
                     <Route path="/*" element={<Pins user={user && user} />} />
                 </Routes>
             </div>
