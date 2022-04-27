@@ -13,7 +13,13 @@ import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 
 // For a random image from unsplash
-const randomImage = "https://source.unsplash.com/1600x900/?nature,photography,technology"
+const randomImage =
+    "https://source.unsplash.com/1600x900/?nature,photography,technology";
+
+const activeBtnStyles =
+    "bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none";
+const notActiveBtnStyles =
+    "bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none";
 
 function UserProfile() {
     const [user, setUser] = useState(null);
@@ -24,18 +30,28 @@ function UserProfile() {
     const { userId } = useParams();
 
     useEffect(() => {
-        const query = userQuery(userId)
+        const query = userQuery(userId);
 
         client.fetch(query).then((data) => {
-            setUser(data[0])
-        })
+            setUser(data[0]);
+        });
     }, [userId]);
+
+    useEffect(() => {
+        if (text === "Created") {
+            const createdPinsQuery = userCreatedPinsQuery(userId);
+            client.fetch(createdPinsQuery).then((data) => setPins(data));
+        } else {
+            const savedPinsQuery = userSavedPinsQuery(userId);
+            client.fetch(savedPinsQuery).then((data) => setPins(data));
+        }
+    }, [text, userId]);
 
     // Logout function
     const logout = () => {
-        localStorage.clear()
-        navigate('/login')
-    }
+        localStorage.clear();
+        navigate("/login");
+    };
 
     if (!user) {
         return <Spinner message="Loading Profile..." />;
@@ -72,7 +88,10 @@ function UserProfile() {
                                             onClick={renderProps.onClick}
                                             disabled={renderProps.disabled}
                                         >
-                                            <AiOutlineLogout color="red" fontSize={21} />
+                                            <AiOutlineLogout
+                                                color="red"
+                                                fontSize={21}
+                                            />
                                         </button>
                                     )}
                                     onLogoutSuccess={logout}
@@ -81,6 +100,45 @@ function UserProfile() {
                             )}
                         </div>
                     </div>
+                    <div className="text-center mb-7">
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                setText(e.target.textContent);
+                                setActiveBtn("created");
+                            }}
+                            className={`${
+                                activeBtn === "created"
+                                    ? activeBtnStyles
+                                    : notActiveBtnStyles
+                            }`}
+                        >
+                            Created
+                        </button>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                setText(e.target.textContent);
+                                setActiveBtn("saved");
+                            }}
+                            className={`${
+                                activeBtn === "saved"
+                                    ? activeBtnStyles
+                                    : notActiveBtnStyles
+                            }`}
+                        >
+                            Saved
+                        </button>
+                    </div>
+                    {pins?.length ? (
+                        <div className="px-2">
+                            <MasonryLayout pins={pins} />
+                        </div>
+                    ) : (
+                            <div className="flex justify-center font-bold items-center w-full text-xl mt-2">
+                                No Pins Found!
+                            </div>
+                    )}
                 </div>
             </div>
         </div>
