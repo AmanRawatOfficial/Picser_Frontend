@@ -20,7 +20,6 @@ const Home = () => {
     useEffect(() => {
         const query = userQuery(userInfo?.googleId);
         client.fetch(query).then((data) => {
-            console.log(data);
             setUser(data[0]);
         });
     }, [userInfo?.googleId]);
